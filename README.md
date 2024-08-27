@@ -15,6 +15,7 @@ PaliGemma is a cutting-edge multimodal AI model that combines the power of langu
 ## TODO
 - Implement SoViT-400m architecture, which is the shape-optimized version of the original SigLIP.
 - Get pretrained model and perform finetune on user data.
+
 ## Acknowledgements
 
 - Huggingface implementation can be found [here](https://github.com/hkproj/pytorch-paligemma/tree/main)

@@ -451,11 +451,10 @@ class PaliGemmaForConditionalGen(nn.Module):
         pad_mask_expanded = pad_mask.unsqueeze(-1).expand(-1, -1, embed_dim)
         image_mask_expanded = image_mask.unsqueeze(-1).expand(-1, -1, embed_dim)
 
-        # Add the text embeddings
         final_embedding = torch.where(
             text_mask_expanded, inputs_embeds, final_embedding
         )
-        # Insert image embeddings. We can't use torch.where because the sequence length of scaled_image_features is not equal to the sequence length of the final embedding
+
         final_embedding = final_embedding.masked_scatter(
             image_mask_expanded, scaled_image_features
         )
@@ -471,8 +470,7 @@ class PaliGemmaForConditionalGen(nn.Module):
         q_len = inputs_embeds.shape[1]
 
         if kv_cache is None or kv_cache.num_items() == 0:
-            # Do not mask any token, because we're in the prefill phase
-            # This only works when we have no padding
+
             causal_mask = torch.full(
                 (batch_size, q_len, q_len), fill_value=0, dtype=dtype, device=device
             )
@@ -480,8 +478,7 @@ class PaliGemmaForConditionalGen(nn.Module):
             # Since we are generating tokens, the query must be one single token
             assert q_len == 1
             kv_len = kv_cache.num_items() + q_len
-            # Also in this case we don't need to mask anything, since each query should be able to attend all previous tokens.
-            # This only works when we have no padding
+
             causal_mask = torch.full(
                 (batch_size, q_len, kv_len), fill_value=0, dtype=dtype, device=device
             )
