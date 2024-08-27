@@ -1,0 +1,22 @@
+[
+    {
+        "image_file": "sunset_beach.jpg",
+        "text": "A breathtaking sunset over a tropical beach. The sky is painted with vibrant oranges and pinks, reflecting off the calm ocean waters. Palm trees silhouette against the colorful horizon."
+    },
+    {
+        "image_file": "mountain_landscape.jpg",
+        "text": "A majestic mountain landscape with snow-capped peaks. In the foreground, a crystal-clear lake reflects the mountains like a mirror. Pine trees dot the shoreline, adding a touch of green to the scene."
+    },
+    {
+        "image_file": "urban_cityscape.jpg",
+        "text": "A bustling urban cityscape at night. Skyscrapers with glowing windows reach towards the sky, their lights creating a dazzling display. Streets below are filled with the streaking lights of cars in motion."
+    },
+    {
+        "image_file": "autumn_forest.jpg",
+        "text": "A serene autumn forest scene. Trees with leaves in shades of red, orange, and gold line a winding dirt path. Sunlight filters through the canopy, creating a warm, golden glow on the forest floor."
+    },
+    {
+        "image_file": "space_nebula.jpg",
+        "text": "A stunning view of a colorful nebula in deep space. Swirling clouds of gas and dust in purples, blues, and pinks spread across the starry background. Bright stars punctuate the cosmic canvas, hinting at the vastness of the universe."
+    }
+]
