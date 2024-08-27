@@ -12,7 +12,7 @@ class SigLIPVisionConfig(nn.Module):
         num_channels=3,
         patch_size=16,
         layer_norm_eps=1e-6,
-        attention_dropout=0.0,
+        attention_dropout=0.1,
         num_image_tokens=None,
         **kwargs,
     ):
@@ -43,7 +43,7 @@ class GemmaConfig:
         rms_norm_epsilon=1e-6,
         rope_theta=10000.0,
         attention_bias=False,
-        hidden_dropout_prob=0.0,
+        hidden_dropout_prob=0.1,
         pad_token_id=None,
         **kwargs,
     ):
