@@ -3,8 +3,8 @@ import numpy as np
 from PIL import Image
 import torch
 
-IMAGENET_STANDARD_MEAN = [0.5, 0.5, 0.5]
-IMAGENET_STANDARD_STD = [0.5, 0.5, 0.5]
+IMAGENET_STANDARD_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STANDARD_STD = [0.229, 0.224, 0.225]
 
 
 def add_image_tokens_to_prompt(prefix_prompt, bos_token, image_seq_length, image_token):
