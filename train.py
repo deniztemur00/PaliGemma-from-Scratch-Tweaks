@@ -15,6 +15,7 @@ def train(
 ):
     model.to(device)
     model.train()
+    torch.set_float32_matmul_precision("high")
     optimizer = AdamW(model.parameters(), lr=learning_rate)
 
     for epoch in range(num_epochs):
