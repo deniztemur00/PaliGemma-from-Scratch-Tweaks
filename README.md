@@ -12,7 +12,7 @@ PaliGemma is a cutting-edge multimodal AI model that combines the power of langu
 - **Precision**: Set float32 matmul precision from highest to high. This is to provide a speedup in the training process.
 
 
-- **Dtype Conversion**: Converted the model to bfloat16 for faster training.
+- **Mixed Precision Training**: Converted model parameters to bfloat16. This is to reduce the memory usage and speed up the training process.
 
 
 - **Compiling**: Compiled the model with max autotune with full graph optimization.
