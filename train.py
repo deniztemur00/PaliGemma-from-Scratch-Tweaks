@@ -13,11 +13,14 @@ def train(
     num_epochs: int,
     learning_rate: float,
 ):
+    model = torch.compile(model, mode="max-autotune", fullgraph=True)
     model.to(device)
-    model.train()
+
+    
     torch.set_float32_matmul_precision("high")
     optimizer = AdamW(model.parameters(), lr=learning_rate)
     scaler = torch.cuda.amp.GradScaler()  # gradient scaler
+
     for epoch in range(num_epochs):
         print(f"Epoch {epoch + 1}/{num_epochs}")
 
@@ -48,10 +51,7 @@ def train(
             scaler.step(optimizer)
             scaler.update()
 
-   
             total_train_loss += loss.item()
-
-
 
         avg_train_loss = total_train_loss / len(train_dataloader)
         print(f"Average training loss: {avg_train_loss:.4f}")
