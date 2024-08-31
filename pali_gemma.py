@@ -403,8 +403,7 @@ class PaliGemmaForConditionalGen(nn.Module):
         self.vocab_size = config.vocab_size
 
         self.language_model = GemmaForCausalLM(config.text_config)
-
-
+        
         self.pad_token_id = (
             self.config.pad_token_id if self.config.pad_token_id is not None else -1
         )
