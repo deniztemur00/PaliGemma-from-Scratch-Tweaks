@@ -113,18 +113,10 @@ class GemmaAttention(nn.Module):
         self.is_causal = True
 
         assert self.hidden_size % self.num_heads == 0
-
-        self.q_proj = nn.Linear(
-            self.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias
-        )
-        self.k_proj = nn.Linear(
+        self.qkv_proj = nn.Linear(
             self.hidden_size,
-            self.num_key_value_heads * self.head_dim,
-            bias=config.attention_bias,
-        )
-        self.v_proj = nn.Linear(
-            self.hidden_size,
-            self.num_key_value_heads * self.head_dim,
+            self.num_heads * self.head_dim
+            + 2 * self.num_key_value_heads * self.head_dim,  # 2 for key and value
             bias=config.attention_bias,
         )
         self.o_proj = nn.Linear(
@@ -146,11 +138,17 @@ class GemmaAttention(nn.Module):
     ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
         bsz, q_len, _ = hidden_states.size()  # [Batch_Size, Seq_Len, Hidden_Size]
         # [Batch_Size, Seq_Len, Num_Heads_Q * Head_Dim]
-        query_states = self.q_proj(hidden_states)
+        qkv = self.qkv_proj(hidden_states)
 
-        key_states = self.k_proj(hidden_states)
-
-        value_states = self.v_proj(hidden_states)
+        query_states, key_states, value_states = torch.split(
+            qkv,
+            [
+                self.num_heads * self.head_dim,
+                self.num_key_value_heads * self.head_dim,
+                self.num_key_value_heads * self.head_dim,
+            ],
+            dim=-1,
+        )
         # [Batch_Size, Num_Heads_Q, Seq_Len, Head_Dim]
         query_states = query_states.view(
             bsz, q_len, self.num_heads, self.head_dim
@@ -178,7 +176,7 @@ class GemmaAttention(nn.Module):
 
         key_states = repeat_kv(key_states, self.num_key_value_groups)
         value_states = repeat_kv(value_states, self.num_key_value_groups)
-        # Perform the calculation as usual, Q * K^T / sqrt(head_dim). Shape: [Batch_Size, Num_Heads_Q, Seq_Len_Q, Seq_Len_KV]
+
         # flass attention implementation
         attn_output = nn.functional.scaled_dot_product_attention(
             query_states,
