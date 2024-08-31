@@ -44,18 +44,18 @@ class SigLIPSelfAttention(nn.Module):
         self.embed_dim = config.hidden_size
         self.num_heads = config.num_attention_heads
         self.head_dim = self.embed_dim // self.num_heads
-        self.q_proj = nn.Linear(self.embed_dim, self.embed_dim)
-        self.k_proj = nn.Linear(self.embed_dim, self.embed_dim)
-        self.v_proj = nn.Linear(self.embed_dim, self.embed_dim)
+        # Fused qkv for efficiency
+        self.qkv_proj = nn.Linear(self.embed_dim, 3 * self.embed_dim)
+
         self.attn_dropout = nn.Dropout(config.attention_dropout)
         self.projection = nn.Linear(self.embed_dim, self.embed_dim)
         self.scaling = self.head_dim**-0.5
 
     def forward(self, x):
         batch_size, num_patches, embed_dim = x.shape
-        query = self.q_proj(x)
-        key = self.k_proj(x)
-        value = self.v_proj(x)
+        # Split query, key, value in the last dimension
+        query, key, value = self.qkv_proj(x).chunk(3, dim=-1)
+
         query = query.view(
             batch_size, num_patches, self.num_heads, self.head_dim
         ).transpose(1, 2)
@@ -84,8 +84,11 @@ class SigLIPSelfAttention(nn.Module):
         # attn_weights = self.attn_dropout(attn_weights)
         # attn = attn_weights @ value
 
-        attn = attn.transpose(1, 2).contiguous()
-        attn = attn.reshape(batch_size, num_patches, self.embed_dim)
+        attn = (
+            attn.transpose(1, 2)
+            .contiguous()
+            .view(batch_size, num_patches, self.embed_dim)
+        )
         attn = self.projection(attn)
 
         return attn
